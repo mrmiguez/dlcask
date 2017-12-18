@@ -1,0 +1,8 @@
+# local dev
+ipython
+# libs
+flask
+requests
+oauth2client
+# google api client
+google-api-python-client

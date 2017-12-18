@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Projects</h2>
+    <h3>Overview</h3>
+
+    <div class="container">
+
+        {% for project in projects %}
+
+            <a href="/{{ project.title }}">
+                <h4 class="lead display-4">{{ project.title }}</h4>
+            </a>
+            <div class="row border-primary">
+
+                <div class="col lead">
+                    <p>Digitized: {{ project.digi_perc }}%</p>
+                </div>
+                <div class="col lead">
+                    <p>QC: {{ project.qc_perc }}%</p>
+                </div>
+                <div class="col lead">
+                    <p>Ready Queue: {{ project.ready_perc }}%</p>
+                </div>
+                <div class="col lead">
+                    <p>Metadata: {{ project.md_perc }}%</p>
+                </div>
+
+             </div>
+
+        {% endfor %}
+
+    </div>
+
+{% endblock %}

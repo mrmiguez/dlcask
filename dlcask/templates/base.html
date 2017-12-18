@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+        <meta charset="UTF-8">
+        <title>DLCask</title>
+
+        <!-- css & js -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='node_modules/bootstrap/bootstrap.css') }}/" />
+        <script src="{{ url_for('static', filename='node_modules/jquery/jquery.js') }}"></script>
+        <script src="{{ url_for('static', filename='node_modules/popper.js/popper.js') }}"></script>
+        <script src="{{ url_for('static', filename='node_modules/bootstrap/bootstrap.js') }}"></script>
+    {% endblock head %}
+</head>
+<body>
+    <h1>DLCask</h1>
+
+    {% block content %}
+    
+    {% endblock %}
+
+</body>
+</html>
