@@ -11,22 +11,50 @@
             <a href="/{{ project.title }}">
                 <h4 class="lead display-4">{{ project.title }}</h4>
             </a>
-            <div class="row border-primary">
 
-                <div class="col lead">
-                    <p>Digitized: {{ project.digi_perc }}%</p>
-                </div>
-                <div class="col lead">
-                    <p>QC: {{ project.qc_perc }}%</p>
-                </div>
-                <div class="col lead">
-                    <p>Ready Queue: {{ project.ready_perc }}%</p>
-                </div>
-                <div class="col lead">
-                    <p>Metadata: {{ project.md_perc }}%</p>
-                </div>
+            {% if project.batch_data|length == 1 %}
 
-             </div>
+                <div class="row border-primary">
+
+                    <div class="col lead">
+                        <p>Digitized: {{ project.batch_data.digi_perc }}%</p>
+                    </div>
+                    <div class="col lead">
+                        <p>QC: {{ project.batch_data.qc_perc }}%</p>
+                    </div>
+                    <div class="col lead">
+                        <p>Ready Queue: {{ project.batch_data.ready_perc }}%</p>
+                    </div>
+                    <div class="col lead">
+                        <p>Metadata: {{ project.batch_data.md_perc }}%</p>
+                    </div>
+
+                 </div>
+
+            {% else %}
+
+                {% for data in project.batch_data %}
+
+                    <div class="row border-primary">
+
+                        <div class="col lead">
+                            <p>Digitized: {{ data.digi_perc }}%</p>
+                        </div>
+                        <div class="col lead">
+                            <p>QC: {{ data.qc_perc }}%</p>
+                        </div>
+                        <div class="col lead">
+                            <p>Ready Queue: {{ data.ready_perc }}%</p>
+                        </div>
+                        <div class="col lead">
+                            <p>Metadata: {{ data.md_perc }}%</p>
+                        </div>
+
+                     </div>
+
+                {% endfor %}
+
+            {% endif %}
 
         {% endfor %}
 
