@@ -1,23 +1,26 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     {% block head %}
-        <meta charset="UTF-8">
+        <a href="/">
+            <i class="fa fa-home" aria-hidden="true"></i>
+        </a>
         <title>DLCask</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- css & js -->
+        <!-- css -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-slate.css') }}/" />
-        <script src="{{ url_for('static', filename='node_modules/jquery/jquery.js') }}"></script>
-        <script src="{{ url_for('static', filename='node_modules/popper.js/popper.js') }}"></script>
-        <script src="{{ url_for('static', filename='node_modules/bootstrap/bootstrap.js') }}"></script>
+
     {% endblock head %}
 </head>
 <body>
-    <h1>DLCask</h1>
-
     {% block content %}
     
     {% endblock %}
-
+    <!-- js -->
+    <script src="{{ url_for('static', filename='node_modules/jquery/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/popper.js/popper.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/bootstrap/bootstrap.js') }}"></script>
 </body>
 </html>

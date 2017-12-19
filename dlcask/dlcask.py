@@ -1,6 +1,5 @@
 import os
 import drive_access
-from collections import namedtuple
 from flask import Flask, render_template, g, session
 from flask_session import Session
 from apiclient import discovery
@@ -13,7 +12,8 @@ app = Flask(__name__)
 # Session extension config
 SESSION_TYPE = 'filesystem'
 SESSION_FILE_DIR = 'secret/'
-SESSION_PERMANENT = False
+SESSION_PERMANENT = True
+SESSION_FILE_THRESHOLD = 50
 app.config.from_object(__name__)
 Session(app)
 

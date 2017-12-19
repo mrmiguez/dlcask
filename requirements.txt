@@ -4,5 +4,7 @@ ipython
 flask
 requests
 oauth2client
+# flask extensions
+Flask-Session
 # google api client
 google-api-python-client
