@@ -1,12 +1,21 @@
 import os
 import drive_access
 from collections import namedtuple
-from flask import Flask, render_template
+from flask import Flask, render_template, g, session
+from flask_session import Session
 from apiclient import discovery
 from httplib2 import Http
 from oauth2client.service_account import ServiceAccountCredentials
 
 app = Flask(__name__)
+# app.secret_key = os.urandom(24)
+
+# Session extension config
+SESSION_TYPE = 'filesystem'
+SESSION_FILE_DIR = 'secret/'
+SESSION_PERMANENT = False
+app.config.from_object(__name__)
+Session(app)
 
 self_path = os.path.abspath(os.path.dirname(__file__))
 
@@ -21,15 +30,18 @@ http_auth = credentials.authorize(Http())
 drive_service = discovery.build('drive', 'v3', http=http_auth)
 sheet_service = discovery.build('sheets', 'v4', http=http_auth)
 
+
 @app.route('/')
 def index():
-    projects = drive_access.parse_projects(drive_service, sheet_service)
-    return render_template('index.html', projects=projects)
+    session['s'] = drive_access.parse_projects(drive_service, sheet_service)
+    return render_template('index.html', projects=session['s'])
 
 
-@app.route('/<project>')
-def project(project):
-    return render_template('project.html', project=project)
+@app.route('/<title>')
+def project(title):
+    for project in session['s']:
+        if project.title == title:
+            return render_template('project.html', project=project)
 
 
 if __name__ == '__main__':

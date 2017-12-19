@@ -76,7 +76,7 @@ def md_perc(sheet_service, sheet_id):
     iid_list = response["values"][0]
     record_complete_data = response["values"][-2]
     iid_count = 0
-    record_complete_count = 0
+    record_complete_count = 1
     for item in iid_list:
         if item:
             iid_count = iid_count + 1
