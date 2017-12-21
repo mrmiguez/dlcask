@@ -16,26 +16,26 @@
     </nav>
 
     <div class="container">
-        <h2 class="lead">{{ project.title }}</h2>
+        <h3>{{ project.title }}</h3>
 
         <div class="card text-white bg-primary mb-3" style="max-width: 70rem;">
           <div class="card-header">Scope</div>
           <div class="card-body">
-            <p class="card-text">{{ project.wkbk['values'][0][0] }}</p>
+            <p class="card-text">{{ project.scope }}</p>
           </div>
         </div>
     </div>
 
     <div class="container">
-        <h3>Important Dates</h3>
+        <h3 class="lead">Important Dates</h3>
 
         <table class="table table-hover">
             <tr>
-                <th scope="col">{{ project.wkbk['values'][3][0] }}</th>
-                <th scope="col">{{ project.wkbk['values'][3][1] }}</th>
-                <th scope="col">{{ project.wkbk['values'][3][2] }}</th>
+                <th scope="col">{{ project.dates[0][0] }}</th>
+                <th scope="col">{{ project.dates[0][1] }}</th>
+                <th scope="col">{{ project.dates[0][2] }}</th>
             </tr>
-        {% for row in project.wkbk['values'][4:] %}
+        {% for row in project.dates[1:] %}
             <tr>
 
                 {% for item in row %}

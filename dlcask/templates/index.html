@@ -16,7 +16,7 @@
       </div>
     </nav>
     <div class="container">
-    <h2 class="lead">Projects</h2>
+    <h2>Projects</h2>
     <h3>Overview</h3>
     </div>
 
@@ -28,49 +28,43 @@
                 <h4>{{ project.title }}</h4>
             </a>
 
-            {% if project.batch_data|length == 1 %}
+            <!--{% if project.batch_data|length == 1 %}-->
 
-                <div class="row border-primary">
+                <!--<div class="row border-primary">-->
 
-                    <div class="col lead">
-                        <p>Digitized: {{ project.batch_data.digi_perc }}%</p>
-                    </div>
-                    <div class="col lead">
-                        <p>QC: {{ project.batch_data.qc_perc }}%</p>
-                    </div>
-                    <div class="col lead">
-                        <p>Ready Queue: {{ project.batch_data.ready_perc }}%</p>
-                    </div>
-                    <div class="col lead">
-                        <p>Metadata: {{ project.batch_data.md_perc }}%</p>
-                    </div>
+                    <!--<div class="col lead">-->
+                        <!--<p>Digitized: {{ project.batch_data.digi_perc }}%</p>-->
+                    <!--</div>-->
+                    <!--<div class="col lead">-->
+                        <!--<p>QC: {{ project.batch_data.qc_perc }}%</p>-->
+                    <!--</div>-->
+                    <!--<div class="col lead">-->
+                        <!--<p>Metadata: {{ project.batch_data.md_perc }}%</p>-->
+                    <!--</div>-->
 
-                 </div>
+                 <!--</div>-->
 
-            {% else %}
+            <!--{% else %}-->
 
-                {% for data in project.batch_data %}
+                <!--{% for data in project.batch_data %}-->
 
-                    <div class="row border-primary">
+                    <!--<div class="row border-primary">-->
 
-                        <div class="col lead">
-                            <p>Digitized: {{ data.digi_perc }}%</p>
-                        </div>
-                        <div class="col lead">
-                            <p>QC: {{ data.qc_perc }}%</p>
-                        </div>
-                        <div class="col lead">
-                            <p>Ready Queue: {{ data.ready_perc }}%</p>
-                        </div>
-                        <div class="col lead">
-                            <p>Metadata: {{ data.md_perc }}%</p>
-                        </div>
+                        <!--<div class="col lead">-->
+                            <!--<p>Digitized: {{ data.digi_perc }}%</p>-->
+                        <!--</div>-->
+                        <!--<div class="col lead">-->
+                            <!--<p>QC: {{ data.qc_perc }}%</p>-->
+                        <!--</div>-->
+                        <!--<div class="col lead">-->
+                            <!--<p>Metadata: {{ data.md_perc }}%</p>-->
+                        <!--</div>-->
 
-                     </div>
+                     <!--</div>-->
 
-                {% endfor %}
+                <!--{% endfor %}-->
 
-            {% endif %}
+            <!--{% endif %}-->
         </div>
 
         {% endfor %}

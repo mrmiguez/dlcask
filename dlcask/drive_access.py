@@ -1,25 +1,74 @@
+import os
 import re
 import googleapiclient
-from collections import namedtuple
+from httplib2 import Http
 from secret import FOLDER_ID
+from apiclient import discovery
+from collections import namedtuple
+from oauth2client.service_account import ServiceAccountCredentials
 
-simple_project = namedtuple('simple_project', 'title wkbk batch_data')
-#complex_project = namedtuple('complex_project', 'title batch_nums data_batch_list')
-project_ids = namedtuple('project_ids', 'title gid wkbk_gid md_gid')
-project_data = namedtuple('project_data', 'digi_perc qc_perc ready_perc md_perc')
+# Google API init
+self_path = os.path.abspath(os.path.dirname(__file__))
+
+scopes = (
+    'https://www.googleapis.com/auth/drive.metadata.readonly',
+    'https://www.googleapis.com/auth/spreadsheets.readonly'
+)
+
+credentials = ServiceAccountCredentials.from_json_keyfile_name(os.path.join(
+    self_path, 'secret/dlcask_service_secret.json'), scopes=scopes)
+http_auth = credentials.authorize(Http())
+drive_service = discovery.build('drive', 'v3', http=http_auth)
+sheet_service = discovery.build('sheets', 'v4', http=http_auth)
+
+# namedtuple definitions
+g_folder = namedtuple("g_folder", "title gid")
+workbook = namedtuple("workbook", "scope dates sheets")
+sheet = namedtuple("sheet", "title gid")
+details = namedtuple("details", "title scope dates batches")
+batch = namedtuple("batch", "dg qc md")
 
 
-# get DLC Project Folders
-def get_projects(drive_service):
-    files = drive_service.files().list(
+def project_list():
+    """
+    :param drive_service: Drive API connection
+    :return: list of child folders in FOLDER_ID parent
+    """
+    folders = drive_service.files().list(
             q="'{0}' in parents and mimeType='application/vnd.google-apps.folder'".format(FOLDER_ID)).execute(
             ).get('files', [])
-    return [project_ids(f['name'], f['id'], sheet_ids(drive_service, f['id'])[0], sheet_ids(drive_service, f['id'])[1])
-            for f in files]
+    return [g_folder(f['name'], f['id']) for f in folders]
 
 
-# Retrieve spreadsheet ID's
-def sheet_ids(drive_service, parent_gid):
+def project_detail(parent_gid):
+    """
+
+    :param sheet_service:
+    :param parent_gid:
+    :return:
+    """
+    # build workbook(scope, dates, [sheet(title, gid)])
+    wb_book, mods_books = sheet_ids(parent_gid)
+    book_request = sheet_service.spreadsheets().values().get(spreadsheetId=wb_book.gid, range="A1:C99999",
+                                                        majorDimension="ROWS").execute()
+    sheet_request = sheet_service.spreadsheets().get(spreadsheetId=wb_book.gid).execute()
+    project_workbook = workbook(book_request['values'][0][0],
+                                book_request['values'][3:],
+                                [sheet(wb_sheet['properties']['title'], wb_sheet['properties']['sheetId'])
+                                 for wb_sheet in sheet_request['sheets'][1:]]
+                               )
+    return project_workbook  # test
+    # todo: match together MODS & digi batches and calculate batch(dg, qc, md)
+    # todo: build & return details(title, scope, dates, batches)
+
+
+def sheet_ids(parent_gid):
+    """
+
+    :param drive_service:
+    :param parent_gid:
+    :return:
+    """
     workbook = re.compile("WorkBook|workbook|Workbook")
     mods = re.compile("^mods")
     request = drive_service.files().list(q="'{0}' in parents and mimeType='application/vnd.google-apps.spreadsheet'".format(
@@ -27,63 +76,9 @@ def sheet_ids(drive_service, parent_gid):
     response = request.execute()
     files = response.get('files', [])
     mods_ids = []
-    wkbk_ids = []
     for f in files:
         if workbook.search(f['name']):
-            wkbk_ids.append(f['id'])
+            wkbk_id = sheet(f['name'], f['id'])
         if mods.search(f['name']):
-            mods_ids.append(f['id'])
-    return wkbk_ids, mods_ids
-
-
-def parse_projects(drive_service, sheet_service):
-    projects = []
-    project_query = get_projects(drive_service)
-    for project in project_query:
-        try:
-            wkbk = wkbk_details(sheet_service, project.wkbk_gid[0])
-        except IndexError:
-            pass
-        if len(project.md_gid) < 2:
-            try:
-                perc1, perc2, perc3, perc4 = data_stats(sheet_service, project.md_gid[0])
-                projects.append(simple_project(project.title,
-                                               wkbk,
-                                               [project_data(perc1, perc2, perc3, perc4)]))
-            except IndexError:
-                pass
-        else:
-            data_list = []
-            for gid in project.md_gid:
-                perc1, perc2, perc3, perc4 = data_stats(sheet_service, gid)
-                data_list.append(project_data(perc1, perc2, perc3, perc4))
-            projects.append(simple_project(project.title,
-                                           wkbk,
-                                           data_list))
-    return projects
-
-
-def data_stats(sheet_service, md_gid):
-    return (17, 35, 48, md_perc(sheet_service, md_gid))
-
-
-def md_perc(sheet_service, sheet_id):
-    request = sheet_service.spreadsheets().values().get(spreadsheetId=sheet_id, range="A1:ZZ99999", majorDimension="COLUMNS")
-    response = request.execute()
-    iid_list = response["values"][0]
-    record_complete_data = response["values"][-2]
-    iid_count = 0
-    record_complete_count = 1
-    for item in iid_list:
-        if item:
-            iid_count = iid_count + 1
-    for item in record_complete_data:
-        if item:
-            record_complete_count = record_complete_count + 1
-    return (record_complete_count / iid_count) * 100
-
-
-def wkbk_details(sheet_service, sheet_id):
-    request = sheet_service.spreadsheets().values().get(spreadsheetId=sheet_id, range="A1:C99999", majorDimension="ROWS")
-    response = request.execute()
-    return response
+            mods_ids.append(sheet(f['name'],f['id']))
+    return wkbk_id, mods_ids
