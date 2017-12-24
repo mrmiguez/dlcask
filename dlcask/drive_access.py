@@ -1,5 +1,6 @@
 import os
 import re
+import itertools
 import googleapiclient
 from httplib2 import Http
 from secret import FOLDER_ID
@@ -57,7 +58,9 @@ def project_detail(parent_gid):
                                 [sheet(wb_sheet['properties']['title'], wb_sheet['properties']['sheetId'])
                                  for wb_sheet in sheet_request['sheets'][1:]]
                                )
-    return project_workbook  # test
+    # return project_workbook  # test
+    sheet_groups = [{ k: list(v) } for k, v in
+                    itertools.groupby(project_workbook.sheets, key=lambda sheet: sheet.title.split('_')[0])]
     # todo: match together MODS & digi batches and calculate batch(dg, qc, md)
     # todo: build & return details(title, scope, dates, batches)
 
