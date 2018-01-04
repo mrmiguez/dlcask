@@ -27,12 +27,21 @@ g_folder = namedtuple("g_folder", "title gid")
 workbook = namedtuple("workbook", "scope dates sheets")
 sheet = namedtuple("sheet", "title gid")
 details = namedtuple("details", "title scope dates batches")
-batch = namedtuple("batch", "dg qc md")
+batch = namedtuple("batch", "num dg qc md")
+
+
+def batch_calc(batch):
+    """
+
+    :param batch:
+    :return:
+    """
+    # todo: actually write this
+    return 1, 2, 3, 4
 
 
 def project_list():
     """
-    :param drive_service: Drive API connection
     :return: list of child folders in FOLDER_ID parent
     """
     folders = drive_service.files().list(
@@ -43,8 +52,6 @@ def project_list():
 
 def project_detail(parent_gid):
     """
-
-    :param sheet_service:
     :param parent_gid:
     :return:
     """
@@ -58,17 +65,24 @@ def project_detail(parent_gid):
                                 [sheet(wb_sheet['properties']['title'], wb_sheet['properties']['sheetId'])
                                  for wb_sheet in sheet_request['sheets'][1:]]
                                )
-    # return project_workbook  # test
+
+    # match together MODS & digi batches and calculate batch(num, dg, qc, md)
     sheet_groups = [{ k: list(v) } for k, v in
                     itertools.groupby(project_workbook.sheets, key=lambda sheet: sheet.title.split('_')[0])]
-    # todo: match together MODS & digi batches and calculate batch(dg, qc, md)
-    # todo: build & return details(title, scope, dates, batches)
+    batches = []
+    for p_batch in sheet_groups:
+        for k in p_batch.keys():
+            p_batch[k] = p_batch[k] + [mods_book for mods_book in mods_books if k in mods_book.title]
+        batches = batches + [batch_calc(p_batch)]
+
+    # build & return details(title, scope, dates, batches)
+    project_details = details('Title', project_workbook.scope, project_workbook.dates,
+                              [batch(num, dg, qc, md) for num, dg, qc, md in batches])
+    return project_details
 
 
 def sheet_ids(parent_gid):
     """
-
-    :param drive_service:
     :param parent_gid:
     :return:
     """

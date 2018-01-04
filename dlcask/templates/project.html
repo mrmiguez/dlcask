@@ -27,6 +27,17 @@
     </div>
 
     <div class="container">
+        <h3 class="lead">Batches</h3>
+
+        {% for batch in project.batches %}
+            <h4>{{ batch.num }}</h4>
+            <p>{{ batch.dg }}, {{ batch.qc }}, {{ batch.md }}</p>
+        {% endfor %}}
+
+
+    </div>
+
+    <div class="container">
         <h3 class="lead">Important Dates</h3>
 
         <table class="table table-hover">
