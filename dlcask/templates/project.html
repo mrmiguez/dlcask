@@ -31,7 +31,7 @@
 
         {% for batch in project.batches %}
             <h4>{{ batch.num }}</h4>
-            <p>{{ batch.dg }}, {{ batch.qc }}, {{ batch.md }}</p>
+            <p>Digitized: {{ '{0:.0f}%'.format(batch.dg) }}, Metadata: {{ '{0:.0}%'.format(batch.md) }}</p>
         {% endfor %}}
 
 

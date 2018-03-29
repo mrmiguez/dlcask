@@ -1,4 +1,3 @@
-import os
 import drive_access
 from flask import Flask, render_template, g, session
 from flask_session import Session
@@ -26,7 +25,7 @@ def index():
 def project(title):
     for project in session['s']:
         if project.title == title:
-            detail = drive_access.project_detail(project.gid)
+            detail = drive_access.project_detail(project.title, project.gid)
             return render_template('project.html', project=detail)
 
 
