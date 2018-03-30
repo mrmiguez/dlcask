@@ -9,9 +9,17 @@
 
     <div class="collapse navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="/">Home</a>
             </li>
+            {% for batch in project.batches %}
+            <li class="nav-item">
+                <a class="nav-link" href="#{{ batch.num }}">Batch {{ batch.num }}</a>
+            </li>
+            {% endfor %}
+            <!-- <li class="nav-item">
+                <a class="nav-link" href="#dates">Timeline</a>
+            </li> -->
         </ul>
     </div>
 </nav>
@@ -28,26 +36,27 @@
     </div>
 
     <div class="container">
-        <h3 class="lead">Batches</h3>
+        <h3>Batches</h3>
 
         {% for batch in project.batches %}
-        <h4>{{ batch.num }}</h4>
+        <div id="{{ batch.num }}">
+        <h4>{{ project.title }} batch #{{ batch.num }}</h4>
 
         {# Block for digitization progress #}
         {% if batch.dg < 49 %}
-        <p>Digitized: {{ '{0:.0f}%'.format(batch.dg) }}</p>
+        <p><strong>Digitized:</strong> <span class="text-warning">{{ '{0:.0f}%'.format(batch.dg) }}</span></p>
         <div class="progress">
             <div class="progress-bar bg-warning" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.dg) }}"
                  aria-valuenow="{{ '{0:.0f}'.format(batch.dg) }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         {% elif batch.dg < 99 %}
-        <p>Digitized: {{ '{0:.0f}%'.format(batch.dg) }}</p>
+        <p><strong>Digitized:</strong> <span class="text-info">{{ '{0:.0f}%'.format(batch.dg) }}</span></p>
         <div class="progress">
             <div class="progress-bar bg-info" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.dg) }}"
                  aria-valuenow="{{ '{0:.0f}'.format(batch.dg) }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         {% else %}
-        <p>Digitized: {{ '{0:.0f}%'.format(batch.dg) }}</p>
+        <p><strong>Digitized:</strong> <span class="text-success">{{ '{0:.0f}%'.format(batch.dg) }}</span></p>
         <div class="progress">
             <div class="progress-bar bg-success" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.dg) }}"
                  aria-valuenow="{{ '{0:.0f}'.format(batch.dg) }}" aria-valuemin="0" aria-valuemax="100"></div>
@@ -56,32 +65,37 @@
 
         {# Block for metadata progress #}
         {% if batch.md < 49 %}
-        <p>Metadata: {{ '{0:.0f}%'.format(batch.md) }}</p>
+        <p><strong>Metadata:</strong> <span class="text-warning">{{ '{0:.0f}%'.format(batch.md) }}</span></p>
         <div class="progress">
             <div class="progress-bar bg-warning" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.md) }}"
                  aria-valuenow="{{ '{0:.0f}'.format(batch.md) }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         {% elif batch.md < 99 %}
-        <p>Metadata: {{ '{0:.0f}%'.format(batch.md) }}</p>
+        <p><strong>Metadata:</strong> <span class="text-info">{{ '{0:.0f}%'.format(batch.md) }}</span></p>
         <div class="progress">
             <div class="progress-bar bg-info" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.md) }}"
                  aria-valuenow="{{ '{0:.0f}'.format(batch.md) }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         {% else %}
-        <p>Metadata: {{ '{0:.0f}%'.format(batch.md) }}</p>
+        <p><strong>Metadata:</strong> <span class="text-success">{{ '{0:.0f}%'.format(batch.md) }}</span></p>
         <div class="progress">
             <div class="progress-bar bg-success" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.md) }}"
                  aria-valuenow="{{ '{0:.0f}'.format(batch.md) }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         {% endif %}
+        </div>
+        <hr/>
         {% endfor %}
 
 
     </div>
 </div>
-<div class="container">
-    <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#dates">Important Dates</button>
-    <div id="dates" class="collapse container">
+<div class="container-fluid">
+    <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#dates" aria-expanded="false" aria-controls="dates">Important Dates
+        <span></span>
+    </button>
+    <div id="dates" class="collapse">
+
         <table class="table table-hover">
             <tr>
                 <th scope="col">{{ project.dates[0][0] }}</th>
@@ -98,6 +112,6 @@
             </tr>
             {% endfor %}
         </table>
-
+        </div>
     </div>
     {% endblock %}

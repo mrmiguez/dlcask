@@ -1,6 +1,11 @@
+#import os
+#import sys
 import drive_access
 from flask import Flask, render_template, g, session
 from flask_session import Session
+
+#PATH = os.path.abspath(os.path.dirname(__file__))
+#sys.path.append(os.path.join(PATH, 'secret/'))
 from secret import ARCH_ID
 
 
