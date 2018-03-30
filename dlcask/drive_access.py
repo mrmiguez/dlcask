@@ -82,15 +82,18 @@ def batch_calc(sheet_group):
         dg_sheet_response), md_calc(md_sheet_response)  # todo: dg_calc returns last sheet analysed, not multi
 
 
-def project_list():
+def project_list(folder_id=FOLDER_ID):
     """
     :return: list of child folders in FOLDER_ID parent
     """
     folders = drive_service.files().list(
-        q="'{0}' in parents and mimeType='application/vnd.google-apps.folder'".format(FOLDER_ID)).execute(
+        q="'{0}' in parents and mimeType='application/vnd.google-apps.folder'".format(folder_id)).execute(
     ).get('files', [])
-    return [g_folder(f['name'], f['id']) for f in folders]
-
+    # curr_proj = [g_folder(f['name'], f['id']) for f in folders if 'Z_' not in f['name']]
+    # curr_proj = curr_proj.sort()
+    # arch = curr_proj.pop(-1)
+    # return arch, curr_proj
+    return [g_folder(f['name'], f['id']) for f in folders if 'Z_' not in f['name']]
 
 def project_detail(parent_title, parent_gid):
     """

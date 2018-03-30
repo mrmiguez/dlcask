@@ -15,28 +15,19 @@
         </ul>
       </div>
     </nav>
+    <div class="container">
+    <h2>Projects</h2>
+    <h3>Completed Projects</h3><hr/>
+    </div>
+
+
+    {% for project in projects %}
 
         <div class="container">
-            <h2>Projects</h2>
-            <h3>Overview</h3>
+            <h4>{{ project.title }}</h4>
         </div>
 
+    {% endfor %}
 
-        {% for project in projects %}
-
-            <div class="container">
-                <a href="/{{ project.title }}">
-                    <h4>{{ project.title }}</h4>
-                </a>
-            </div>
-
-        {% endfor %}
-
-    <hr class="display-1"/>
-    <div class="container">
-        <a href="/archive">
-            <h4 class="text-muted">Completed Projects</h4>
-        </a>
-    </div>
 
 {% endblock %}

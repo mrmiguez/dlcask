@@ -1,6 +1,7 @@
 import drive_access
 from flask import Flask, render_template, g, session
 from flask_session import Session
+from secret import ARCH_ID
 
 
 app = Flask(__name__)
@@ -27,6 +28,12 @@ def project(title):
         if project.title == title:
             detail = drive_access.project_detail(project.title, project.gid)
             return render_template('project.html', project=detail)
+
+
+@app.route('/archive')
+def archive():
+    projects = drive_access.project_list(folder_id=ARCH_ID)
+    return render_template('archive.html', projects=projects)
 
 
 if __name__ == '__main__':

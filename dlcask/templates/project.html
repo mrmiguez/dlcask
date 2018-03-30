@@ -1,28 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <a class="navbar-brand" href="/">DLCask</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation" style="">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="/">DLCask</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation" style="">
         <span class="navbar-toggler-icon"></span>
-      </button>
+    </button>
 
-      <div class="collapse navbar-collapse" id="navbarColor01">
+    <div class="collapse navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="/">Home</a>
-          </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Home</a>
+            </li>
         </ul>
-      </div>
-    </nav>
-
+    </div>
+</nav>
+<div class="jumbotron">
     <div class="container">
         <h3>{{ project.title }}</h3>
 
         <div class="card text-white bg-primary mb-3" style="max-width: 70rem;">
-          <div class="card-header">Scope</div>
-          <div class="card-body">
-            <p class="card-text">{{ project.scope }}</p>
-          </div>
+            <div class="card-header">Scope</div>
+            <div class="card-body">
+                <p class="card-text">{{ project.scope }}</p>
+            </div>
         </div>
     </div>
 
@@ -30,23 +31,64 @@
         <h3 class="lead">Batches</h3>
 
         {% for batch in project.batches %}
-            <h4>{{ batch.num }}</h4>
-            <p>Digitized: {{ '{0:.0f}%'.format(batch.dg) }}, Metadata: {{ '{0:.0}%'.format(batch.md) }}</p>
-        {% endfor %}}
+        <h4>{{ batch.num }}</h4>
+
+        {# Block for digitization progress #}
+        {% if batch.dg < 49 %}
+        <p>Digitized: {{ '{0:.0f}%'.format(batch.dg) }}</p>
+        <div class="progress">
+            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.dg) }}"
+                 aria-valuenow="{{ '{0:.0f}'.format(batch.dg) }}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        {% elif batch.dg < 99 %}
+        <p>Digitized: {{ '{0:.0f}%'.format(batch.dg) }}</p>
+        <div class="progress">
+            <div class="progress-bar bg-info" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.dg) }}"
+                 aria-valuenow="{{ '{0:.0f}'.format(batch.dg) }}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        {% else %}
+        <p>Digitized: {{ '{0:.0f}%'.format(batch.dg) }}</p>
+        <div class="progress">
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.dg) }}"
+                 aria-valuenow="{{ '{0:.0f}'.format(batch.dg) }}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        {% endif %}
+
+        {# Block for metadata progress #}
+        {% if batch.md < 49 %}
+        <p>Metadata: {{ '{0:.0f}%'.format(batch.md) }}</p>
+        <div class="progress">
+            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.md) }}"
+                 aria-valuenow="{{ '{0:.0f}'.format(batch.md) }}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        {% elif batch.md < 99 %}
+        <p>Metadata: {{ '{0:.0f}%'.format(batch.md) }}</p>
+        <div class="progress">
+            <div class="progress-bar bg-info" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.md) }}"
+                 aria-valuenow="{{ '{0:.0f}'.format(batch.md) }}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        {% else %}
+        <p>Metadata: {{ '{0:.0f}%'.format(batch.md) }}</p>
+        <div class="progress">
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.md) }}"
+                 aria-valuenow="{{ '{0:.0f}'.format(batch.md) }}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        {% endif %}
+        {% endfor %}
 
 
     </div>
-
-    <div class="container">
-        <h3 class="lead">Important Dates</h3>
-
+</div>
+<div class="container">
+    <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#dates">Important Dates</button>
+    <div id="dates" class="collapse container">
         <table class="table table-hover">
             <tr>
                 <th scope="col">{{ project.dates[0][0] }}</th>
                 <th scope="col">{{ project.dates[0][1] }}</th>
                 <th scope="col">{{ project.dates[0][2] }}</th>
             </tr>
-        {% for row in project.dates[1:] %}
+            {% for row in project.dates[1:] %}
             <tr>
 
                 {% for item in row %}
@@ -54,7 +96,8 @@
                 {% endfor %}
 
             </tr>
-        {% endfor %}}
+            {% endfor %}
         </table>
+
     </div>
-{% endblock %}
+    {% endblock %}
