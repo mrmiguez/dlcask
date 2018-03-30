@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-primary">
     <a class="navbar-brand" href="/">DLCask</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
             aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation" style="">
@@ -90,10 +90,8 @@
 
     </div>
 </div>
-<div class="container-fluid">
-    <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#dates" aria-expanded="false" aria-controls="dates">Important Dates
-        <span></span>
-    </button>
+<div class="container">
+    <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#dates" aria-expanded="false" aria-controls="dates">Important Dates</button>
     <div id="dates" class="collapse">
 
         <table class="table table-hover">
