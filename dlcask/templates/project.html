@@ -43,46 +43,50 @@
         <h4>{{ project.title }} batch #{{ batch.num }}</h4>
 
         {# Block for digitization progress #}
-        {% if batch.dg < 49 %}
-        <p><strong>Digitized:</strong> <span class="text-warning">{{ '{0:.0f}%'.format(batch.dg) }}</span></p>
+        {% if batch.dg[0] < 49 %}
+        <p class="mt-1"><strong>Digitized:</strong> <span class="text-warning">{{ '{0:.0f}%'.format(batch.dg[0]) }}</span></p>
         <div class="progress">
-            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.dg) }}"
-                 aria-valuenow="{{ '{0:.0f}'.format(batch.dg) }}" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.dg[0]) }}"
+                 aria-valuenow="{{ '{0:.0f}'.format(batch.dg[0]) }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
-        {% elif batch.dg < 99 %}
-        <p><strong>Digitized:</strong> <span class="text-info">{{ '{0:.0f}%'.format(batch.dg) }}</span></p>
+        {% elif batch.dg[0] < 99 %}
+        <p class="mt-1"><strong>Digitized:</strong> <span class="text-info">{{ '{0:.0f}%'.format(batch.dg[0]) }}</span></p>
         <div class="progress">
-            <div class="progress-bar bg-info" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.dg) }}"
-                 aria-valuenow="{{ '{0:.0f}'.format(batch.dg) }}" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-info" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.dg[0]) }}"
+                 aria-valuenow="{{ '{0:.0f}'.format(batch.dg[0]) }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         {% else %}
-        <p><strong>Digitized:</strong> <span class="text-success">{{ '{0:.0f}%'.format(batch.dg) }}</span></p>
+        <p class="mt-1"><strong>Digitized:</strong> <span class="text-success">{{ '{0:.0f}%'.format(batch.dg[0]) }}</span></p>
         <div class="progress">
-            <div class="progress-bar bg-success" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.dg) }}"
-                 aria-valuenow="{{ '{0:.0f}'.format(batch.dg) }}" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.dg[0]) }}"
+                 aria-valuenow="{{ '{0:.0f}'.format(batch.dg[0]) }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         {% endif %}
 
         {# Block for metadata progress #}
-        {% if batch.md < 49 %}
-        <p><strong>Metadata:</strong> <span class="text-warning">{{ '{0:.0f}%'.format(batch.md) }}</span></p>
+        {% if batch.md[0] < 49 %}
+        <p class="mt-1"><strong>Metadata:</strong> <span class="text-warning">{{ '{0:.0f}%'.format(batch.md[0]) }}</span></p>
         <div class="progress">
-            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.md) }}"
-                 aria-valuenow="{{ '{0:.0f}'.format(batch.md) }}" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.md[0]) }}"
+                 aria-valuenow="{{ '{0:.0f}'.format(batch.md[0]) }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
-        {% elif batch.md < 99 %}
-        <p><strong>Metadata:</strong> <span class="text-info">{{ '{0:.0f}%'.format(batch.md) }}</span></p>
+        {% elif batch.md[0] < 99 %}
+        <p class="mt-1"><strong>Metadata:</strong> <span class="text-info">{{ '{0:.0f}%'.format(batch.md[0]) }}</span></p>
         <div class="progress">
-            <div class="progress-bar bg-info" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.md) }}"
-                 aria-valuenow="{{ '{0:.0f}'.format(batch.md) }}" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-info" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.md[0]) }}"
+                 aria-valuenow="{{ '{0:.0f}'.format(batch.md[0]) }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         {% else %}
-        <p><strong>Metadata:</strong> <span class="text-success">{{ '{0:.0f}%'.format(batch.md) }}</span></p>
+        <p class="mt-1"><strong>Metadata:</strong> <span class="text-success">{{ '{0:.0f}%'.format(batch.md[0]) }}</span></p>
         <div class="progress">
-            <div class="progress-bar bg-success" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.md) }}"
-                 aria-valuenow="{{ '{0:.0f}'.format(batch.md) }}" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ '{0:.0f}%'.format(batch.md[0]) }}"
+                 aria-valuenow="{{ '{0:.0f}'.format(batch.md[0]) }}" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         {% endif %}
+            <div class="row mt-2">
+                <div class="col-sm"><strong>Total items: </strong>{{ batch.dg[1] }}</div>
+                <div class="col-sm"><strong>Total records: </strong>{{ batch.md[1] }}</div>
+            </div>
         </div>
         <hr/>
         {% endfor %}

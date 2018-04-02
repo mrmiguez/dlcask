@@ -31,15 +31,21 @@ batch = namedtuple("batch", "num dg md")
 
 
 def dg_calc(data):
-    dg = 0
-    for col in data['values']:
-        if col[0] == 'Completed By':
-            count = 0
-            for item in col[1:]:
-                if item:
-                    count = count + 1
-            dg = (count / len(col[1:])) * 100
-    return dg
+    complete_count = 0
+    col_count = 0
+    for sheet in data:
+        for col in sheet['values']:
+            if col[0] == 'Completed By' or col[0] == 'Scanned':
+                for item in col[1:]:
+                    col_count = col_count +1
+                    if item:
+                        complete_count = complete_count + 1
+    try:
+        dg = (complete_count / col_count) * 100
+    except ZeroDivisionError:
+        dg = 0
+        col_count = 0
+    return dg, col_count
 
 
 def md_calc(data):
@@ -53,7 +59,10 @@ def md_calc(data):
     for item in record_complete_data:
         if item:
             record_complete_count = record_complete_count + 1
-    return (record_complete_count / iid_count) * 100
+    try:
+        return (record_complete_count / iid_count) * 100, iid_count
+    except ZeroDivisionError:
+        return 0, 0
 
 
 def batch_calc(sheet_group):
@@ -63,6 +72,7 @@ def batch_calc(sheet_group):
     :return:
     """
     for key in sheet_group.keys():
+        dg_sheets_data = []
         for batch_sheet in sheet_group[key]:
             if 'mods' in batch_sheet.title:
                 md_sheet_request = sheet_service.spreadsheets().values().get(spreadsheetId=batch_sheet.gid,
@@ -76,13 +86,13 @@ def batch_calc(sheet_group):
                                                                                  batch_sheet.title),
                                                                              majorDimension="COLUMNS",
                                                                              valueRenderOption="UNFORMATTED_VALUE")
-                dg_sheet_response = dg_sheet_request.execute()
+                dg_sheets_data.append(dg_sheet_request.execute())
 
     try:
         return int(key[-1]), dg_calc(
-            dg_sheet_response), md_calc(md_sheet_response)  # todo: dg_calc returns last sheet analysed, not multi
+            dg_sheets_data), md_calc(md_sheet_response)  # todo: dg_calc returns last sheet analysed, not multi
     except ValueError:
-        return 0, dg_calc(dg_sheet_response), md_calc(md_sheet_response)
+        return 0, dg_calc(dg_sheets_data), md_calc(md_sheet_response)
 
 
 def project_list(folder_id=FOLDER_ID):
@@ -97,6 +107,7 @@ def project_list(folder_id=FOLDER_ID):
     # arch = curr_proj.pop(-1)
     # return arch, curr_proj
     return [g_folder(f['name'], f['id']) for f in folders if 'Z_' not in f['name']]
+
 
 def project_detail(parent_title, parent_gid):
     """
@@ -143,6 +154,7 @@ def project_detail(parent_title, parent_gid):
 
     except AttributeError:
         return None, 'Is there a project workbook available?'
+
 
 def sheet_ids(parent_gid):
     """
