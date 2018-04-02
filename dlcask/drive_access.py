@@ -78,8 +78,11 @@ def batch_calc(sheet_group):
                                                                              valueRenderOption="UNFORMATTED_VALUE")
                 dg_sheet_response = dg_sheet_request.execute()
 
-    return int(key[-1]), dg_calc(
-        dg_sheet_response), md_calc(md_sheet_response)  # todo: dg_calc returns last sheet analysed, not multi
+    try:
+        return int(key[-1]), dg_calc(
+            dg_sheet_response), md_calc(md_sheet_response)  # todo: dg_calc returns last sheet analysed, not multi
+    except ValueError:
+        return 0, dg_calc(dg_sheet_response), md_calc(md_sheet_response)
 
 
 def project_list(folder_id=FOLDER_ID):
@@ -103,30 +106,43 @@ def project_detail(parent_title, parent_gid):
     """
     # build workbook(scope, dates, [sheet(title, gid)])
     wb_book, mods_books = sheet_ids(parent_gid)
-    book_request = sheet_service.spreadsheets().values().get(spreadsheetId=wb_book.gid, range="A1:C99999",
-                                                             majorDimension="ROWS").execute()
-    sheet_request = sheet_service.spreadsheets().get(spreadsheetId=wb_book.gid).execute()
-    project_workbook = workbook(book_request['values'][0][0],
-                                book_request['values'][3:],
-                                [sheet(wb_sheet['properties']['title'], wb_book.gid)
-                                 for wb_sheet in sheet_request['sheets'][1:]]
-                                )
+    try:
 
-    # match together MODS & digi batches by title
-    sheet_groups = [{k: list(v)} for k, v in
-                    itertools.groupby(project_workbook.sheets, key=lambda sheet: sheet.title.split('_')[0])]
-    batches = []
-    # iter spreadsheet batches to calculate completion percentages
-    for p_batch in sheet_groups:
-        for k in p_batch.keys():
-            p_batch[k] = p_batch[k] + [mods_book for mods_book in mods_books if k.lower() in mods_book.title.lower()]
-        batches = batches + [batch_calc(p_batch)]
+        book_request = sheet_service.spreadsheets().values().get(spreadsheetId=wb_book.gid, range="A1:C99999",
+                                                                 majorDimension="ROWS").execute()
+        sheet_request = sheet_service.spreadsheets().get(spreadsheetId=wb_book.gid).execute()
+        project_workbook = workbook(book_request['values'][0][0],
+                                    book_request['values'][3:],
+                                    [sheet(wb_sheet['properties']['title'], wb_book.gid)
+                                     for wb_sheet in sheet_request['sheets'][1:]]
+                                    )
 
-    # build & return details(title, scope, dates, batches)
-    project_details = details(parent_title, project_workbook.scope, project_workbook.dates,
-                              [batch(num, dg, md) for num, dg, md in batches])
-    return project_details
+        if len(project_workbook.sheets) > 1:
+            # match together MODS & digi batches by title
+            sheet_groups = [{k: list(v)} for k, v in
+                            itertools.groupby(project_workbook.sheets, key=lambda sheet: sheet.title.split('_')[0])]
+            batches = []
+            # iter spreadsheet batches to calculate completion percentages
+            for p_batch in sheet_groups:
+                for k in p_batch.keys():
+                    p_batch[k] = p_batch[k] + [mods_book for mods_book in mods_books if k.lower() in mods_book.title.lower()]
+                batches = batches + [batch_calc(p_batch)]
 
+
+        else:
+            try:
+                p_batch = {'Batch0': [project_workbook.sheets[0], mods_books[0]]}
+                batches = [batch_calc(p_batch)]
+            except IndexError:
+                return None, 'Are inventory sheets included the workbook?'
+
+        # build & return details(title, scope, dates, batches)
+        project_details = details(parent_title, project_workbook.scope, project_workbook.dates,
+                                  [batch(num, dg, md) for num, dg, md in batches])
+        return project_details, None
+
+    except AttributeError:
+        return None, 'Is there a project workbook available?'
 
 def sheet_ids(parent_gid):
     """
@@ -140,6 +156,7 @@ def sheet_ids(parent_gid):
             parent_gid))
     response = request.execute()
     files = response.get('files', [])
+    wkbk_id = None
     mods_ids = []
     for f in files:
         if workbook.search(f['name']):

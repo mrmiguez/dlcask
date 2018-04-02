@@ -31,8 +31,11 @@ def index():
 def project(title):
     for project in session['s']:
         if project.title == title:
-            detail = drive_access.project_detail(project.title, project.gid)
-            return render_template('project.html', project=detail)
+            detail, err = drive_access.project_detail(project.title, project.gid)
+            if detail:
+                return render_template('project.html', project=detail)
+            else:
+                return render_template('error.html', err=err)
 
 
 @app.route('/archive')
