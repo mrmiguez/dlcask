@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-primary">
     <a class="navbar-brand" href="/">DLCask</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
             aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation" style="">
@@ -19,9 +19,9 @@
     </div>
 </nav>
 
-<div class="container">
+<div class="container" style="padding-top: 20px">
     <h3>Error</h3>
-    <p>DLCask has encountered and error.</p>
-    <p>{{ err }}</p>
+    <p>DLCask has encountered an error.</p>
+    <h4>{{ err }}</h4>
 </div>
 {% endblock %}

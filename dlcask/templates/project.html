@@ -12,11 +12,16 @@
             <li class="nav-item">
                 <a class="nav-link" href="/">Home</a>
             </li>
-            {% for batch in project.batches %}
-            <li class="nav-item">
-                <a class="nav-link" href="#{{ batch.num }}">Batch {{ batch.num }}</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#batches" aria-haspopup="true" aria-controls="batches" aria-expanded="false">
+                    Batches
+                </a>
+                <div id="batches" class="dropdown-menu" aria-labelledby="batches">
+                    {% for batch in project.batches %}
+                        <a class="dropdown-item" href="#{{ batch.num }}">Batch {{ batch.num }}</a>
+                    {% endfor %}
+                </div>
             </li>
-            {% endfor %}
             <!-- <li class="nav-item">
                 <a class="nav-link" href="#dates">Timeline</a>
             </li> -->
@@ -39,7 +44,7 @@
         <h3>Batches</h3>
 
         {% for batch in project.batches %}
-        <div id="{{ batch.num }}">
+        <div id="{{ batch.num }}" style="padding-top: 70px">
         <h4>{{ project.title }} batch #{{ batch.num }}</h4>
 
         {# Block for digitization progress #}

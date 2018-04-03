@@ -11,6 +11,12 @@
 
         <!-- css -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-slate.css') }}/" />
+        <style>
+            /* prevent body from hiding under the navbar */
+            body {
+                padding-top: 50px;
+            }
+        </style>
 
     {% endblock head %}
 </head>

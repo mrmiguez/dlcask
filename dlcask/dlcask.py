@@ -36,6 +36,7 @@ def project(title):
                 return render_template('project.html', project=detail)
             else:
                 return render_template('error.html', err=err)
+    return render_template('error.html', err='404: Page not found.')
 
 
 @app.route('/archive')
